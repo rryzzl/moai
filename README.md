@@ -37,6 +37,7 @@ print("平方後前5個元素:", squares[:5])
 這段程式使用 NumPy 產生100萬個隨機數，並以向量化方式計算平方。在 NumPy 中，arr ** 2 會對陣列中的每個元素計算平方，執行底層的高效C運算，相較以 Python 迴圈逐個計算要快得多。 小技巧與常見錯誤：
 向量化優勢： 儘量用陣列的向量化操作取代純 Python 的 loop，可以取得顯著效能提升。
 矩陣維度： NumPy 操作常涉及矩陣維度，注意對齊 (broadcasting) 規則，確保運算時陣列維度相容，否則會引發錯誤。
+
 常見錯誤： Python 的 list 和 NumPy ndarray 是不同型別，直接對 Python list 使用 NumPy 函式可能導致錯誤。若遇到類型不匹配問題，可用 np.array(list) 將 list 轉為 ndarray。
 Pandas 與資料處理
 理論概念： Pandas 提供 DataFrame 資料結構，使我們能方便地操作結構化表格資料。可將其視為 Excel 試算表或SQL資料表的程式介面。Pandas 支援資料篩選、清理、聚合等操作，是資料前處理與分析的利器。 實作方法： 常見操作包括讀取資料（例如 CSV 檔）、篩選欄位、處理缺失值和描述性統計等。下面以 Iris 鳶尾花資料集為例，展示如何使用 Pandas 進行資料載入與基本分析：
@@ -673,3 +674,775 @@ ntudac.medium.com
 ntudac.medium.com
 、TensorFlow/PyTorch 官方教程等資源。
 各類線上課程（Coursera、Udacity）和 Kaggle 學習賽資料，用於進一步提升實戰能力。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MOAI 2025 國際人工智慧奧林匹克競賽 知識點手冊與範例題解
+本手冊彙整 MOAI 2025 澳門選拔賽所需的重點知識，包括 Python 編程基礎、數據處理、資料視覺化、機器學習、模型評估、深度學習 (PyTorch)、卷積神經網絡 (CNN)、自然語言處理 (NLP) 等範疇，並針對提供的手寫數字識別範例題進行詳細解題。內容涵蓋理論定義、常用語法與範例、常見錯誤與調試提示，以及應用場景與最佳實踐。此手冊可作為半開卷比賽的高效查詢資料，幫助參賽者快速復習和定位所需知識。
+Python 基礎 (Python Basics)
+基本語法與結構： Python 使用縮排來劃分程式區塊，常見結構包括 條件語句 (if/elif/else)、迴圈 (for 迴圈, while 迴圈) 等。注意冒號:和縮排層級。範例：
+python
+複製
+編輯
+x = 10
+if x > 0:
+    print("正數")
+else:
+    print("非正數")
+# 輸出: 正數
+常見錯誤 (Common Errors): 忘記在條件後加冒號、縮排錯誤 (IndentationError)、誤用條件運算符 (= vs ==) 等。調試時可檢查括號配對和縮排空格數是否一致。
+循環 (Loops)： 迴圈允許重複執行程式區塊。for 迴圈常用於遍歷序列，例如 for i in range(5): 會從0迭代到4。while 迴圈在條件為真時反覆執行。範例：
+python
+複製
+編輯
+# 用 for 迴圈計算 1+2+...+N
+total = 0
+for i in range(1, N+1):
+    total += i
+
+# 用 while 迴圈列印列表元素
+i = 0
+while i < len(my_list):
+    print(my_list[i])
+    i += 1
+常見錯誤： for 迴圈使用錯誤的範圍（如 range(N) 從0到N-1，而非到N）、while 迴圈條件未正確更新導致無限迴圈。最佳實踐是在可能無限的迴圈中加入退出條件，並善用 Python 迭代器或列表生成式提高簡潔性。
+函數 (Functions)： 使用 def 關鍵字定義函數以實現模組化程式。例如：
+python
+複製
+編輯
+def factorial(n):
+    """計算 n 的階乘"""
+    result = 1
+    for i in range(2, n+1):
+        result *= i
+    return result
+
+print(factorial(5))  # 輸出: 120
+關鍵定義： 函數可以有引數 (parameters)和返回值 (return)，沒有明確 return 的函數會回傳 None。可用 默認參數 和 關鍵字參數 增強靈活性。常見錯誤： 忘記呼叫函數時加括號 (function vs function())、在函數內未使用全域變數宣告就修改全域變數 (需要使用 global 關鍵字) 等。
+文件讀寫 (File I/O)： Python 提供簡潔的文件操作介面。使用內建函數 open() 讀寫文件，模式 "r" 讀取、"w" 覆寫寫入、"a" 追加。範例：
+python
+複製
+編輯
+# 將清單寫入檔案
+data = ["Alice", "Bob", "Charlie"]
+with open("names.txt", "w", encoding="utf-8") as f:
+    for name in data:
+        f.write(name + "\n")
+
+# 讀取檔案內容
+with open("names.txt", "r", encoding="utf-8") as f:
+    lines = f.readlines()
+    print(lines)
+使用 with 語句可自動安全地關閉文件。常見錯誤： 檔案路徑錯誤導致 FileNotFoundError、讀寫時忘記設定正確的編碼導致亂碼。調試時可用 print() 輸出確認路徑，或使用 os.path 函數處理路徑。
+第三方庫導入與使用： 利用 import 導入第三方庫，如 import numpy as np 或 from math import pi。確保已安裝對應庫（在 Kaggle 等平台使用 !pip install 安裝）。使用別名能簡化調用（如 np 代表 numpy）。常見錯誤： 模組未安裝或名稱拼寫錯誤 (ModuleNotFoundError)，或誤用 import * 造成名稱衝突。最佳實踐是僅導入所需對象並使用簡潔別名，保持代碼清晰。
+數據處理與操作 (Data Handling with NumPy & Pandas)
+NumPy 陣列 (ndarray)： NumPy 提供高效的多維陣列，支援向量化運算。創建方式包括 np.array() 從 Python 結構轉換，以及 np.zeros(), np.ones(), np.arange(), np.linspace() 等函數產生陣列。範例：
+python
+複製
+編輯
+import numpy as np
+a = np.array([1, 2, 3])              # 1維陣列 [1,2,3]
+b = np.zeros((2,3))                  # 2x3 全零矩陣
+c = np.linspace(0, 1, num=5)         # 等差序列 [0. ,0.25,0.5,0.75,1. ]
+陣列操作： 可通過 shape 屬性取得尺寸，使用 reshape 改變形狀；利用切片 (array[start:stop:step]) 或布林索引篩選元素；陣列運算支援逐元素加減乘除，不需顯式迴圈。常見錯誤： 進行不同形狀的陣列運算時若維度不兼容導致 ValueError，此時需要檢查陣列形狀或利用 NumPy 廣播機制（自動擴充維度）調整。例如 a + b 要求 a.shape == b.shape 或其中一方是可廣播的維度。
+Pandas 資料框 (DataFrame)： Pandas 提供 DataFrame 用於表格數據處理。可使用 pd.read_csv()、pd.read_excel() 等輕鬆讀取資料。範例：
+python
+複製
+編輯
+import pandas as pd
+df = pd.read_csv("data.csv")          # 從CSV讀取成DataFrame
+print(df.head(3))                    # 查看前3筆資料
+print(df.describe())                 # 基本統計描述
+資料框操作： 透過 df.shape 獲取維度，df.columns 檢視欄位。選取資料： df["col"] 獲取單欄位序列，df.iloc[行索引, 列索引] 或 df.loc[行標籤, 列標籤] 可按位置或標籤切片。可使用 布林索引 過濾，例如 df[df["age"] > 30] 返回年齡大於30的資料子集。資料轉換： 常用函數如 df.dropna() 刪除缺失值、df.fillna(val) 填補空缺值、df.apply(func) 對列或行套用函數、df.groupby("col").agg(func) 進行分組聚合等。常見錯誤： 索引鍵錯誤 (KeyError) 由於欄位名稱拼寫不對；數據類型不匹配導致運算錯誤（如將字串當數字計算）。調試時可用 df.dtypes 檢查各欄位型別，必要時用 pd.to_numeric 或 astype() 轉換。
+資料合併與重塑： Pandas 支援 merge 進行資料表合併，類似 SQL 的 JOIN：pd.merge(df1, df2, on="key") 將兩表按鍵合併。使用 df.concat([df1, df2]) 在列方向或欄方向拼接資料。重塑 (Reshape) 操作用於調整資料表結構，例如 df.melt() 將寬格式轉換為長格式，df.pivot_table() 創建樞紐分析表。這些操作有助於整理數據以進行分析或建模。常見錯誤： 合併時鍵不唯一或類型不匹配導致不正確結果，或忽略 how 參數預設 INNER JOIN 導致資料遺失。務必檢查合併結果的行數和預期是否一致。
+特徵預處理 (Feature Preprocessing)： 在建模前通常需要對數據進行清洗與特徵轉換：
+標準化/正規化 (Normalization): 將數值特徵縮放到相似範圍，提高模型收斂。例如將像素值從 [0,255] 線性縮放到 [0,1]
+file-cuatb2ef6rmab8yk5hyvgu
+。
+標準化 (Standardization): 減去平均值除以標準差，使特徵呈現標準常態分布。Scikit-learn 提供 StandardScaler 實現。
+類別編碼: 將分類型資料轉為數值。如 One-Hot 編碼 將類別轉為二進位向量 (使用 Pandas pd.get_dummies() 或 sklearn 的 OneHotEncoder)。注意避免 虛擬變量陷阱（對線性模型可去掉一列避免共線性）。
+缺失值處理: 針對空缺數據，可選擇刪除含缺失值的行列，或用平均值/中位數/眾數填補，或更先進的方法如插值。Pandas 的 fillna 與 sklearn 的 SimpleImputer 可輔助處理。
+常見錯誤與提示： 須確保訓練集和測試集使用相同的縮放/編碼方式（例如先對整個訓練集計算縮放參數，再應用於測試集）。可以使用 Pipeline 組合預處理和模型，避免遺漏步驟。若看到模型在測試時表現異常，檢查是否忘記應用相同的預處理轉換。
+資料集拆分 (Train/Test Split)： 將數據按比例拆分為訓練集與測試集（有時還會再劃分出驗證集）。常用 sklearn.model_selection.train_test_split，確保模型評估的公正性。範例：
+python
+複製
+編輯
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+上例將數據按8:2拆分並設定隨機種子確保可重現。對分類問題可使用 stratify=y 參數保持類別比例平衡。最佳實踐： 切分前先隨機打亂數據，以免原始數據有順序性。同時注意不可泄露測試資訊到訓練過程（如不可用整個資料計算均值再標準化訓練和測試，應只用訓練集資訊）。
+數據可視化 (Data Visualization with Matplotlib & Seaborn)
+Matplotlib 基本繪圖： Matplotlib 是 Python 最基礎的繪圖庫。常用 pyplot 介面：
+python
+複製
+編輯
+import matplotlib.pyplot as plt
+plt.plot([1,2,3,4], [1,4,9,16], label="y=x^2")  # 繪製折線圖
+plt.title("Sample Plot")                       # 標題
+plt.xlabel("x") 
+plt.ylabel("y")
+plt.legend()                                   # 顯示圖例
+plt.show()
+圖表類型： 折線圖 (plt.plot)、散點圖 (plt.scatter)、柱狀圖 (plt.bar)、直方圖 (plt.hist)、盒鬚圖 (plt.boxplot) 等，用於呈現不同數據關係。可以透過 plt.subplot 或 plt.subplots 創建子圖，以在一張圖中呈現多個子圖。常見錯誤： 忘記呼叫 plt.show()（在某些環境需明確顯示）、試圖繪製空數據導致無輸出。調整坐標軸或標籤時可使用 plt.xlim, plt.ylim 或 plt.xticks, plt.yticks 控制範圍與刻度。
+Seaborn 高級繪圖： Seaborn 基於 Matplotlib，提供更簡潔美觀的統計圖形。典型用法：
+python
+複製
+編輯
+import seaborn as sns
+sns.histplot(data=df, x="age", hue="gender", kde=True)  # 帶核密度曲線的直方圖
+sns.boxplot(data=df, x="category", y="value")           # 分組盒鬚圖
+plt.show()
+特點： Seaborn 能自動處理 Pandas DataFrame，並整合統計元素如迴歸線、分類色彩等。常用圖包括：heatmap 繪製熱力圖（例如相關係數矩陣）、pairplot 一鍵繪製成對關係、violinplot 類似盒圖但顯示分布形狀等。最佳實踐： 善用 hue 區分類別、col/row 參數繪製分面圖比較多組資料。Seaborn 默認主題美觀，可以透過 sns.set_theme(style="darkgrid") 等切換風格。
+圖像保存與調整： 使用 plt.savefig("figure.png", dpi=300) 可將圖以指定解析度保存。調整圖像大小可在繪圖前使用 plt.figure(figsize=(w, h)) 設定。為提高在報告或比賽輸出的清晰度，可增加 DPI 或使用向量格式 (.svg, .pdf) 輸出。常見錯誤： 保存圖像時檔案路徑錯誤導致未生成文件；調整大小或添加子圖時對象用錯 (區分使用 plt.figure 返回的 Figure 對象與 Axes 對象的操作)。
+範例：混淆矩陣熱力圖： 混淆矩陣是評估分類模型的重要視覺化工具。我們可以利用 Seaborn 的 heatmap 來繪製。假設有混淆矩陣：
+python
+複製
+編輯
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+cm = np.array([[50, 2], [5, 43]])  # 二分類混淆矩陣
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+            xticklabels=["Pred 0","Pred 1"], 
+            yticklabels=["True 0","True 1"])
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.show()
+上例生成一個 $2\times2$ 的熱力圖，annot=True 顯示數字，使用藍色調色盤方便識別高低。透過這種方式，可以直觀了解分類錯誤類型：對角線為正確數量，非對角線為錯誤數量。
+機器學習基礎與 Scikit-learn 應用 (Classical ML with Scikit-learn)
+監督式學習 (Supervised Learning)： 給定帶標籤的訓練數據，學習輸入到輸出之間的映射關係。
+線性迴歸 (Linear Regression)： 用於迴歸任務，假設輸出與輸入特徵呈線性關係。模型形式：$\hat{y} = w^T x + b$，通過最小化均方誤差 (MSE) 來找到最佳參數。
+mcs.mo
+Scikit-learn 用法：
+python
+複製
+編輯
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+model.fit(X_train, y_train)                      # 訓練線性迴歸模型
+print(model.coef_, model.intercept_)             # 輸出權重和截距
+y_pred = model.predict(X_test)
+關鍵點： 適用於特徵與目標近似線性關係的情況。常見錯誤： 特徵未標準化可能導致不同尺度下係數難以比較；存在明顯異常值時均方誤差敏感，可以考慮使用均絕對誤差 (MAE) 作為優化目標或模型訓練前先處理離群值。
+羅吉斯迴歸 (Logistic Regression)： 用於二元或多元分類，通過 sigmoid 或 softmax 函數將線性組合轉換為概率。二分類中模型為：$\hat{y} = \sigma(w^T x + b)$，$\sigma$ 為 Sigmoid 函數。對數幾率迴歸本質是線性分類模型，使用交叉熵損失訓練。在 sklearn 中：
+python
+複製
+編輯
+from sklearn.linear_model import LogisticRegression
+clf = LogisticRegression(max_iter=1000)
+clf.fit(X_train, y_train)           # 訓練羅吉斯迴歸分類器
+prob = clf.predict_proba(X_test)    # 輸出概率
+pred = clf.predict(X_test)          # 輸出預測標籤
+應用場景： 特徵和類別呈線性可分時效果好，可解釋性強（權重可看作特徵對預測影響）。常見陷阱： 資料高度線性可分時，迴歸係數可能發散（可加 正則化 解決，sklearn 默認有 L2 正則化）。對於多分類，sklearn 默認採用 one-vs-rest 策略，也可設定 multi_class='multinomial' 使用 softmax。
+K 最近鄰 (K-Nearest Neighbors, KNN)： 一種非參數的分類/迴歸方法。分類時，對新樣本，在訓練集中找到距離最近的 K 個鄰居，用鄰居中最多的類別作為預測；迴歸時用鄰居均值。sklearn 用法：
+python
+複製
+編輯
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+pred = knn.predict(X_test)
+特點： 簡單直觀，對決策邊界複雜的問題有效；缺點是計算開銷大、無法給出特徵重要性且對高維資料效能下降（維度詛咒）。調參建議： 選擇適當的 K 值避免過擬合/欠擬合，一般通過驗證集或交叉驗證選取。可使用不同距離度量（歐式、曼哈頓等）根據資料特性調整。
+決策樹 (Decision Tree)： 以樹狀結構進行決策的模型，可用於分類和迴歸。通過遞迴二分資料集，使每次劃分最大程度降低不純度（分類常用 資訊增益/基尼係數，迴歸用方差降低）。範例：
+python
+複製
+編輯
+from sklearn.tree import DecisionTreeClassifier
+dt = DecisionTreeClassifier(max_depth=3, random_state=42)
+dt.fit(X_train, y_train)
+優點： 可解釋性強（可視化決策樹節點決策規則）、能處理非線性關係。缺點： 容易過擬合（樹可能長得過深，需透過 max_depth, min_samples_split 等參數剪枝控制）。常見錯誤： 資料若存在 類別不平衡，純用資訊增益劃分可能導致偏向多數類，需適當調整樣本權重或評估指標。
+隨機森林 (Random Forest)： 集成學習方法，透過構建多顆訓練集子集上的決策樹並投票（分類）或平均（迴歸）提升預測穩健性
+mcs.mo
+。相較單顆樹，隨機森林能減少過擬合並處理高維特徵。sklearn 用法：
+python
+複製
+編輯
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier(n_estimators=100, max_depth=None, random_state=42)
+rf.fit(X_train, y_train)
+importances = rf.feature_importances_  # 每個特徵的重要度
+優點： 通常有不錯的預測表現，對缺失值和異常值不敏感，並可評估特徵重要性。注意： 過多的樹會增加計算時間，但一般不會降低效果；可適當調整 n_estimators 平衡效能與速度。
+支援向量機 (SVM)： 強大的分類（亦可用於迴歸 SVR）模型，通過在高維特徵空間尋找最大間隔的決策超平面分隔資料
+ioai-official.org
+。可使用核函數 (kernel) 處理非線性分類（如 RBF 核對應高斯函數映射）。sklearn 用法：
+python
+複製
+編輯
+from sklearn.svm import SVC
+svc = SVC(kernel='rbf', C=1.0, gamma='scale')
+svc.fit(X_train, y_train)
+特點： 在中小型資料集上效果好，特別是決策邊界複雜但維度不高的情況。缺點： 訓練時間隨樣本和特徵數呈多項式增長，不適合非常大規模資料；參數 C（懲罰項係數）與核參數需要調整。調試提示： 標準化特徵通常對 SVM 很重要；若出現過擬合可降低 C 值，欠擬合則提高 C 或調整核函數參數。
+非監督式學習 (Unsupervised Learning)： 資料沒有標籤，模型試圖發現資料內在結構。
+K-Means 聚類： 將樣本劃分成 K 個群集，使群集內部相似度高、群集之間差異大。演算法透過隨機初始化 K 個聚類中心，反覆指派樣本到最近中心、更新中心位置直至收斂。sklearn 用法：
+python
+複製
+編輯
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=3, random_state=42)
+labels = kmeans.fit_predict(X)   # 對每個樣本給出聚類標籤
+centers = kmeans.cluster_centers_
+注意： K-Means 對初始中心和K值較敏感，常用多次初始化 (n_init) 取最佳結果。輸出 labels 可用於觀察聚類結果，或與真實標籤比較計算 純度 等指標。常見錯誤： 資料若有離群點或非球狀分布，K-Means 聚類效果不佳；可考慮使用 DBSCAN（基於密度的聚類）或 階層式聚類 等替代方法。
+主成分分析 (PCA)： 一種降維技術，通過線性變換將原始特徵空間投影到較低維的正交主成分空間，最大限度保留數據變異
+ioai-official.org
+。前幾個主成分承載了數據的大部分方差。sklearn 用法：
+python
+複製
+編輯
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+X_reduced = pca.fit_transform(X)   # 將特徵降到2維
+print(pca.explained_variance_ratio_)  # 解釋的方差比例
+應用： 可用於資料可視化（將高維資料投影到2D/3D繪圖）、降低模型計算負擔或緩解多重共線性。注意： PCA是無監督的，只關注重建誤差不考慮標籤資訊，在降維後需檢查是否保留足夠對區分有用的訊息。延伸： t-SNE 是另一種非線性降維方法，適合可視化高維資料在低維度的分佈，但計算較慢且只用於可視化不宜用於後續模型。
+模型評估與調試 (Model Evaluation & Tuning)
+評估指標 (Evaluation Metrics)： 根據問題性質選擇合適的評估指標：
+準確率 (Accuracy)： 分類中預測正確的比例，公式：$\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{總樣本數}}$。適用於類別分布均衡且關心整體正確率的情況。
+精確率 (Precision)： 在預測為正的樣本中實際為正的比例，$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}$。當誤報代價高（需要控制假陽性）時重視此指標。
+召回率 (Recall)： 在所有實際為正的樣本中被正確預測的比例，$\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$。當漏檢代價高（關注假陰性）時很重要。
+F1 分數： 精確率與召回率的調和平均 $F1 = 2 \cdot \frac{P \times R}{P + R}$，綜合考量精確率和召回率的平衡，適用於類別不平衡或希望兼顧兩者的情況。
+均方誤差 (MSE) / 均絕對誤差 (MAE)： 迴歸問題常用指標，分別計算預測值與真實值差的平方均值和絕對值均值。MSE 對離群值懲罰更大，MAE 更健壯。
+在 sklearn.metrics 模組中提供了上述指標的實現，如 accuracy_score, precision_score, recall_score, f1_score, mean_squared_error 等，可直接使用。另外，也可使用 classification_report 一次性輸出主要分類指標。範例：
+python
+複製
+編輯
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+acc = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred, average='weighted')
+cm = confusion_matrix(y_test, y_pred)
+注意： 若類別不平衡，準確率可能會掩蓋問題（例如99%負類1%正類，全部預測負有99%準確但召回率低）。此時應輔以精確率、召回率或ROC曲線和AUC等指標全面評估。ROC曲線描繪分類器在各種閾值下真陽率對假陽率的曲線，其下方積分即 AUC (Area Under Curve) 值，AUC 越接近1表示模型區分能力越強。
+混淆矩陣 (Confusion Matrix)： 是分類結果的全面呈現。以二分類為例矩陣為 2x2，列通常表示預測類別，行表示真實類別。元素含義：真陽性 TP（實際正且預測正）、假陽性 FP（實際負但預測正）、假陰性 FN（實際正但預測負）、真陰性 TN（實際負且預測負）。通過混淆矩陣可衍生出精確率、召回率、特異度等指標並分析模型在哪種類別易出錯。例如上節所示的熱力圖視覺化有助於分析錯誤類型。
+過擬合與欠擬合 (Overfitting vs Underfitting)：
+過擬合是指模型在訓練集上表現極佳但無法泛化到未見資料，在其他資料上表現較差的現象
+zh.wikipedia.org
+。過擬合通常發生於模型複雜度過高、參數過多相較於訓練資料量不足時
+zh.wikipedia.org
+。此時模型方差大、對訓練資料噪音過度適應。相反，欠擬合是模型過於簡單，以致無法在訓練集上有效學習資料結構的現象
+zh.wikipedia.org
+；此時模型偏差大。例如，使用線性模型擬合非線性關係會欠擬合。判斷方法： 通過學習曲線觀察訓練和驗證誤差隨樣本量變化；若訓練誤差遠低於驗證誤差且驗證誤差很高，是過擬合；若兩者都很高，是欠擬合。 防止過擬合的實踐： 使用更多訓練數據、特徵選擇/降維減少不相關特徵、對模型引入正則化（如 L1/L2 項限制權重大小）、使用交叉驗證調參防止過度依賴單一驗證集結果、採用早停 (Early Stopping) 在驗證集性能開始下降時停止訓練等措施
+ioai-official.org
+ioai-official.org
+。對深度學習模型，可使用 Dropout 隨機丟棄部分神經元以正則化
+ioai-official.org
+，或採用數據增強增加資料多樣性。
+超參數調整 (Hyperparameter Tuning)： 機器學習模型有許多需事先設定的參數（如樹的深度、正則化係數、學習率等），稱為超參數。調參是提升模型性能關鍵步驟。常用方法：
+Grid Search (網格搜尋)： 枚舉所有組合的超參數值進行嘗試，例如 sklearn.model_selection.GridSearchCV 可對指定參數網格進行交叉驗證評估，選出最佳參數組合。
+Random Search： 在給定範圍內隨機取部分組合嘗試，比網格更高效地探索大範圍參數空間。
+貝葉斯優化 等高級方法利用歷次評估結果漸進選擇下一組測試的參數，提高搜索效率。
+實踐建議： 先調整對結果較敏感的參數，如樹模型的樹數和深度、神經網絡的學習率等。使用 交叉驗證 (Cross-Validation) 評估參數組合的泛化性能
+mcs.mo
+。交叉驗證將訓練資料多折劃分，多次訓練評估取平均，使得調參結果更穩健。當資料量大時，可使用較少折數（例如 5-fold CV）平衡計算負荷。
+交叉驗證 (Cross-Validation)： 如上述，為了更可靠地評估模型泛化能力，將訓練集拆分成 $k$ 個子集，其中 $k-1$ 個用於訓練，剩下1個用於驗證，重複 $k$ 次使每個子集都做過驗證集，最後對結果取平均
+mcs.mo
+。優點： 充分利用數據且評估結果更穩定。常用: sklearn.model_selection.KFold 或 StratifiedKFold (分層抽樣用於分類保持類別比例)，或者更高層級的 cross_val_score 直接對給定模型和資料返回交叉驗證分數。注意： 交叉驗證僅用於評估/選參數，最終模型可在使用最佳參數下重新在全部訓練集上訓練。
+深度學習與 PyTorch 基礎 (Deep Learning & PyTorch Basics)
+感知器與神經網絡基礎： 感知器 (Perceptron) 是最簡單的神經網路，進行線性分類。多個感知器層疊形成多層感知器 (MLP)，屬於前饋神經網絡。每層由若干神經元 (Neuron) 組成，神經元接收前一層輸出的加權和並經過激活函數產生輸出。深度學習通過多層非線性變換，自動從資料中提取高級特徵。
+ioai-official.org
+ioai-official.org
+梯度下降與反向傳播： 梯度下降 (Gradient Descent) 是優化神經網絡參數的基礎演算法。透過計算損失函數相對每個參數的偏導數（梯度），沿著梯度的反方向更新參數以減小損失
+ioai-official.org
+。反向傳播 (Backpropagation) 高效地計算多層網絡的梯度：從輸出層誤差開始，依照鏈式法則將誤差梯度向後傳遞至各層，獲取每層權重的梯度
+ioai-official.org
+。PyTorch 和 TensorFlow 等框架自動實現了反向傳播 (autograd)，使用者只需定義前向計算和損失。
+激活函數 (Activation Function)： 激活函數引入非線性，使神經網絡可以逼近非線性關係
+ioai-official.org
+。常見激活函數：
+ReLU (線性整流)： $f(x) = \max(0, x)$，簡單高效，對正輸出為線性，負輸出為0。優點是計算梯度不會飽和（正區域梯度=1），收斂快
+ioai-official.org
+。
+Sigmoid (邏輯函數)： $f(x) = \frac{1}{1+e^{-x}}$，將輸出壓縮在 (0,1)，適合二分類輸出概率。但輸入值絕對值較大時梯度趨近0，易出現梯度消失問題。
+Tanh (雙曲正切)： $f(x) = \tanh(x)$，輸出在 (-1,1)，類似 Sigmoid 但對稱於0，梯度性質稍好但仍有飽和區問題。
+Leaky ReLU / ELU / PReLU： ReLU 的變種，為負區域引入非零斜率（如 Leaky ReLU: f(x)=x*0.01 if x<0），緩解 ReLU 梯度為零的問題。
+選擇建議： 隱層常用 ReLU 及其變種；輸出層若為分類，二分類用 Sigmoid 配合二元交叉熵損失，多分類用 Softmax（在 CrossEntropyLoss 中隱含計算）；迴歸問題的輸出層則通常用線性激活（不施加非線性）。
+損失函數 (Loss Function)： 衡量模型預測與真實目標的不一致程度，是訓練時要最小化的目標。
+ioai-official.org
+ 常用損失：
+均方誤差 (MSE)： $ \frac{1}{n}\sum (y_{\text{pred}} - y_{\text{true}})^2$，迴歸問題常用。
+ioai-official.org
+偏好平滑的預測，對離群值敏感。
+平均絕對誤差 (MAE) 或 Huber 損失：迴歸中更健壯的選擇，MAE 對每個點線性懲罰誤差，Huber 在誤差小時類似 MSE，大時類似 MAE，兼具優點。
+交叉熵損失 (Cross-Entropy)： 分類問題使用，度量預測分布與真實分布之間的差異。二分類的交叉熵即對數損失：$-\frac{1}{n}\sum[y \log p + (1-y)\log(1-p)]$。多分類情況下通常和 softmax 結合使用，PyTorch 的 nn.CrossEntropyLoss 已整合 softmax 計算。
+其他： 如負對數概似損失 (NLL)、KL 散度、hinge loss (SVM使用) 等，視具體任務選擇。
+優化器 (Optimizer)： 決定如何根據損失函數的梯度更新模型參數。基本的隨機梯度下降 (SGD) 每次用一個或一批樣本計算梯度並更新參數。進階優化演算法在 SGD 基礎上做改進：
+Momentum 動量法： 在更新中加入上一次更新的動量，幫助平滑更新方向，加速收斂並減少局部震盪。
+Adam： 自適應學習率方法，結合動量和 RMSProp 的思想，為每個參數維持一階與二階矩估計來調整學習率
+ioai-official.org
+。通常具有較快的收斂速度和較少的參數調整需求，在各種網絡中被廣泛使用。PyTorch torch.optim.Adam 可直接使用。
+AdamW： Adam 的改進版本，正則化方式改進，更利於控制模型泛化。
+學習率調整： 設定合適的學習率 (learning rate)至關重要：太大導致發散，太小導致收斂慢陷入局部最優。可採用學習率衰減策略，如每若干epoch將學習率乘以一個因子，或使用調度器 (torch.optim.lr_scheduler) 自動調整。
+實踐： 深度學習常以 Adam 作為初始優化器。如訓練不穩定再嘗試 SGD 配合學習率調整或其他優化器。訓練過程中監控損失下降趨勢，如長時間停滯可適當降低學習率。
+PyTorch 基本操作與語法： PyTorch 是深度學習框架，採用動態計算圖，使用張量 (Tensor) 作為基本數據結構（類似 NumPy 陣列但可在 GPU 加速）。
+Tensor 建立與操作： torch.tensor(data) 將 Python 結構轉為張量，或使用 torch.randn, torch.zeros 等直接創建。張量有 shape 屬性，運算介面與 NumPy 類似。可以使用 tensor.view() 或 tensor.reshape() 改變形狀。張量的資料型態很重要：整數型用於標籤，浮點型用於特徵/權重計算等。如需，使用 tensor.long(), tensor.float() 進行型別轉換。
+GPU 加速： 使用 device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 判斷是否有 GPU。
+file-cuatb2ef6rmab8yk5hyvgu
+將模型和資料 .to(device) 可以把計算移到 GPU 上。注意，移到 GPU 的對象需全部在同一設備上運算。調試提示： 如果遇到 tensor 不在同一裝置的錯誤（如 trying to operate on CPU tensor and GPU tensor），檢查確保所有張量和模型都已 .to(device)。
+再現性 (Reproducibility)： 為確保結果可重現，可設定隨機種子：例如 torch.manual_seed(42), np.random.seed(42)，並盡量固定其他隨機性來源（如確保每次訓練數據順序固定或使用 torch.backends.cudnn.deterministic = True 等）。不過在 GPU 上完全重現可能需要額外設定以犧牲部分性能。
+Dataset 與 DataLoader： PyTorch 提供 torch.utils.data.Dataset 接口來定義數據集，DataLoader 用於批量迭代數據集。常用 TensorDataset 封裝張量資料集，搭配 DataLoader 可輕鬆迭代批次：
+python
+複製
+編輯
+from torch.utils.data import TensorDataset, DataLoader
+dataset = TensorDataset(features_tensor, labels_tensor)
+loader = DataLoader(dataset, batch_size=32, shuffle=True)
+for batch_features, batch_labels in loader:
+    # 訓練循環中使用 batch 資料
+    ...
+DataLoader 幫助自動打亂數據 (shuffle=True) 並將資料切成小批，有助於梯度下降的穩定和效率。常見錯誤： 如果 DataLoader 輸入的是 numpy 陣列而非 torch.Tensor 會報型別錯，需先轉成 Tensor；自定義 Dataset 實現 __len__ 和 __getitem__ 時也需注意索引邊界。
+神經網路構建 (nn.Module)： PyTorch 透過 torch.nn.Module 定義模型結構。可繼承 Module 並在 __init__ 方法中定義各層，在 forward 方法中定義前向傳播。範例，構建一個兩層全連接網路進行三分類：
+python
+複製
+編輯
+import torch.nn as nn
+
+class SimpleNN(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(input_dim, hidden_dim)  # 第一層全連接
+        self.act1 = nn.ReLU()                       # 激活函數 ReLU
+        self.fc2 = nn.Linear(hidden_dim, output_dim) # 第二層全連接 (輸出層)
+    def forward(self, x):
+        x = self.act1(self.fc1(x))
+        x = self.fc2(x)  # 輸出層通常不加激活(交由損失函數處理)
+        return x
+
+model = SimpleNN(input_dim=4, hidden_dim=16, output_dim=3).to(device)
+print(model)
+輸出模型結構示例：
+scss
+複製
+編輯
+SimpleNN(
+  (fc1): Linear(in_features=4, out_features=16, bias=True)
+  (act1): ReLU()
+  (fc2): Linear(in_features=16, out_features=3, bias=True)
+)
+常見錯誤： 在 forward 中操作張量時，如果使用原地操作 (帶 _ 的函數如 x.relu_()) 可能導致梯度跟蹤問題，除非確信必要否則使用非原地版本。還有，Module 屬性需是 PyTorch Layer/Module，否則不會被納入參數（如未將 nn.Linear 賦給 self. 開頭變數，將不會被模型識別）。調試時可用 model.parameters() 確認所有應訓練參數都在其中。
+模型訓練迴圈： 典型的訓練步驟包括：前向計算 -> 計算損失 -> 反向傳播 -> 更新參數。每個 epoch（訓練集完整迭代一次）都重複以上步驟，並可在適當時機評估模型表現。以下是通用的 PyTorch 訓練迴圈結構：
+python
+複製
+編輯
+criterion = nn.CrossEntropyLoss()                         # 定義損失函數 (例如交叉熵)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)  # 定義優化器 (例如 SGD)
+num_epochs = 5
+
+for epoch in range(num_epochs):
+    model.train()                             # 設置為訓練模式
+    for X_batch, y_batch in train_loader:     # 遍歷每個批次
+        X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+        optimizer.zero_grad()                # 重置梯度
+        outputs = model(X_batch)             # 前向傳播計算輸出
+        loss = criterion(outputs, y_batch)   # 計算當前批次的損失
+        loss.backward()                      # 反向傳播計算梯度
+        optimizer.step()                     # 更新參數
+    # 可在這裡計算並打印訓練集和驗證集的損失、準確率等指標
+    model.eval()                             # 切換為評估模式
+    # (驗證模型性能的代碼與上面類似，但不需要 backward 和 step，且要包裹 no_grad)
+註解說明： 在 model.train() 模式下，像 Dropout、BatchNorm 層會啟用訓練行為；而 model.eval() 下它們會固定參數或統計值，用於評估。每個 batch 前用 optimizer.zero_grad() 清除前一次的梯度累積。loss.backward() 自動計算所有參數的梯度，optimizer.step() 則依據選定的優化策略調整參數。常見錯誤： 忘記 zero_grad 導致梯度累加過頭；沒有 model.eval() 在驗證時停用dropout導致評估不準確；未 with torch.no_grad(): 包裹驗證計算，可能導致不必要的緩存佔用和速度降低。
+訓練過程監控與保存： 在訓練中定期監控損失和評估指標的變化。如果發現驗證集損失開始上升，說明過擬合開始，可考慮早停。使用 torch.save(model.state_dict(), "model.pt") 可以保存模型權重，以便賽後或部署時使用；相應地用 model.load_state_dict() 加載。還可保存 Optimizer state 以便從中斷處繼續訓練。比賽中通常在本地保存模型後再打包提交。
+卷積神經網絡與計算機視覺 (CNN & Computer Vision)
+卷積層 (Convolutional Layer)： 卷積神經網絡 (CNN) 專門用於處理影像等網格結構數據。卷積層使用卷積核/濾波器 (filter/kernel) 在輸入上滑動，進行點積運算提取局部特徵
+hackmd.io
+。每個卷積核可視為檢測影像中特定模式的探測器
+hackmd.io
+。卷積運算本質：滑動 + 內積
+hackmd.io
+——卷積核在輸入圖像上按步長逐像素移動，在每個位置與重疊的區域逐元素相乘再相加，結果形成特徵圖 (feature map)
+hackmd.io
+。透過多個不同卷積核，卷積層能同時抽取輸入的多種特徵，如邊緣、紋理等。關鍵參數： 卷積核大小 (如3x3, 5x5)、輸出通道數（卷積核個數）、步幅 (stride) 控制滑動步長、填充 (padding) 在輸入邊界補零以控制輸出尺寸。 PyTorch 實現： 使用 nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding) 定義卷積層。例如 nn.Conv2d(1, 16, kernel_size=3, padding=1) 表示輸入通道1（灰度圖），輸出16個特徵圖，卷積核3x3，周圍補零一圈保持尺寸。卷積輸出高度寬度計算公式：$H_{out} = \frac{H_{in} - K + 2P}{S} + 1$（其中 $K$ 是核大小，$P$ 是padding，$S$ 是stride）。常見錯誤： 未對輸入加正確的維度（PyTorch 卷積輸入需是四維張量 [batch, channels, height, width]，單張圖片也要增加 batch 維度）；不同層特徵圖大小不匹配，如卷積後尺寸非預期導致後續全連接層維度錯誤。可透過 print(tensor.shape) 或 model.summary()（如有）排查每層尺寸。
+池化層 (Pooling Layer)： 池化通過取局部區域統計值來縮減特徵圖尺寸，常用於降採樣降低計算量並引入位置不變性。主要類型：最大池化 (Max Pooling) 取區域內最大值，平均池化 (Average Pooling) 取平均值。池化層通常使用 $2\times2$ 覆蓋區域配合步幅2，使寬高減半。
+hackmd.io
+池化的作用包括減少參數、抑制噪聲和對輸入輕微變換（如平移、旋轉、縮放）的容忍
+hackmd.io
+。例如，2x2 max pooling 可使圖像尺寸縮小一半，同時保留主要特徵，提升模型對位置變動的特徵不變性
+hackmd.io
+。 PyTorch 實現： 使用 nn.MaxPool2d(kernel_size, stride)，常見例如 nn.MaxPool2d(2, 2)。平均池化則是 nn.AvgPool2d。注意： 卷積層和池化層都會影響感受野 (Receptive Field)，即網絡輸出節點能看到的輸入區域範圍，多層卷積/池化可擴大感受野讓模型學到更抽象的特徵
+hackmd.io
+。常見錯誤： 池化窗口過大導致過度壓縮資訊；池化一般無參數，但要注意是否會導致維度非整數（通常選步幅等於窗口大小避免重疊或遺漏）。
+CNN 經典架構： CNN 通常由卷積層 + 激活 + 池化組成模塊，堆疊若干次後接全連接層進行分類
+hackmd.io
+hackmd.io
+。早期經典網絡如 LeNet-5 用於手寫字識別，包含兩組卷積+平均池化，最後兩層全連接分類；AlexNet, VGG 加深了卷積層並使用 ReLU 和 MaxPool，ResNet 引入殘差連接。這些架構透過增加深度或寬度提升影像識別效果。實踐： 小型任務可參考 LeNet 結構：例如輸入28x28灰度圖，可用[Conv(1->6)+ReLU+Pool] -> [Conv(6->16)+ReLU+Pool] -> 展平 -> [FC(1655->120)+ReLU] -> [FC(120->84)+ReLU] -> [FC(84->10)] 輸出10類。當然，也可調整通道數和層數，均衡模型複雜度與數據集大小。
+轉移學習 (Transfer Learning)： 在資料有限的情況下，使用在大規模資料上預訓練好的模型（如 ResNet、MobileNet 等）作為特徵提取器，再微調 (fine-tune) 用於新任務
+mcs.mo
+。例如，PyTorch 提供 torchvision.models 預訓練模型：
+python
+複製
+編輯
+from torchvision import models
+model = models.resnet18(pretrained=True)
+for param in model.parameters():
+    param.requires_grad = False       # 冻結預訓練權重
+model.fc = nn.Linear(512, num_classes) # 取代最後一層為新任務
+如上將 ResNet18 最終全連接層改為適應新類別數並只訓練該層（其他層參數凍結保持預訓練值），能在小數據上取得不錯效果。優點： 省去訓練大模型的成本，利用預訓練網絡已學得的通用特徵（如邊緣、形狀），收斂快且精度高。實際比賽中，如果允許，可使用預訓練模型微調來提高圖像任務表現。
+圖像資料增強 (Data Augmentation)： 增強技術透過對訓練影像做隨機變換來合成新樣本，減少過擬合
+mcs.mo
+。常用方法：隨機翻轉（水平/垂直）、隨機裁剪、旋轉、調整亮度/對比度、加雜訊等。PyTorch 可用 torchvision.transforms 定義增強流水線，例如：
+python
+複製
+編輯
+import torchvision.transforms as T
+transform = T.Compose([
+    T.RandomResizedCrop(224),
+    T.RandomHorizontalFlip(),
+    T.ColorJitter(brightness=0.2, contrast=0.2),
+    T.ToTensor()
+])
+dataset = torchvision.datasets.ImageFolder("data/train", transform=transform)
+這將對每張圖片隨機裁剪到224x224、隨機水平翻轉，以及隨機調整亮度對比後轉為張量。提示： 增強只應作用於訓練集，保持驗證/測試集不變以正確評估模型性能。
+前沿模型簡述： (比賽理論範圍涉及，僅需理解概念)
+YOLO (You Only Look Once) / SSD (Single Shot Detector)： 主流**目標檢測 (Object Detection)**模型，直接從影像一次性回歸出多個邊界框及其類別
+ioai-official.org
+。YOLO 將整張圖像分網格，每格預測框和類別；SSD 使用多尺度特徵圖預測。與分類不同，檢測模型輸出目標的位置和類別。應用： 自動駕駛中的行人車輛檢測等。
+U-Net： 一種**圖像分割 (Image Segmentation)**模型，典型的編碼器-解碼器架構，中間使用跳躍連接結合高低層特徵，能對每個像素做分類（區分不同物體或區域）
+ioai-official.org
+。常用於醫學影像分割等任務，需要輸出與輸入同尺寸的像素標註。
+GAN (生成對抗網絡)： 包含生成器 (Generator) 和判別器 (Discriminator) 兩個網絡的框架。生成器試圖產生以假亂真的圖像，判別器試圖分辨真實圖像與生成圖像，雙方通過對抗訓練共同進步。GAN 能生成極為逼真的圖像，是圖像生成、風格轉換等應用的核心方法。
+自我監督學習 (Self-Supervised Learning)： 不依賴人工標籤，通過設計預測輸入一部分內容的任務來學習影像特徵。例如圖像拼圖重排、遮擋區域恢復等任務。這些技術能利用海量未標記圖片進行預訓練，再遷移到下游任務。
+視覺Transformer (ViT)：將 Transformer 架構應用於影像，把圖像切成塊（如 16x16 pixel patch），每塊當作詞嵌入，通過自注意力機制建模全局關係。ViT 在大數據集上可以達到與 CNN 相當甚至更好的效果，是近年視覺領域的研究熱點
+ioai-official.org
+。
+CLIP： OpenAI 提出的跨模態模型，將圖片和文字映射到共同的向量空間。透過對大量圖文配對資料的對比學習，CLIP 能理解圖像內容和文字描述間的對應關係，可用於以文字搜尋圖片等任務。
+Stable Diffusion / DALL·E： 近年流行的生成式模型，能根據文字輸入產生高品質圖像。DALL·E 使用 Transformer 模型直接學習圖文關係；Stable Diffusion 則結合擴散模型和潛在空間的概念，能在較快速度下生成圖像。這類模型參數龐大，屬於預訓練後使用的範疇，在理論上屬生成模型部分，比賽可能涉及概念理解。
+自然語言處理 (NLP) 基礎
+文本前處理 (Text Preprocessing)： NLP 任務通常需要先將文字轉為適合模型處理的形式。斷詞/標記化 (Tokenization) 是將句子切分為詞彙或子字串（對英文通常以空格和標點分詞；對中文可用結巴等分詞工具）。可以移除停用詞（常見無意義詞，如“的”、“and”）、轉小寫、去除標點符號等清洗操作。對於詞彙，還有 詞幹提取 (Stemming) 和 詞形還原 (Lemmatization)，將詞彙化簡到共同形態（例如動詞還原為原形），以減少特徵維度。
+詞向量與嵌入 (Word Embeddings)： 將文字轉換為數值向量是 NLP 的核心步驟。最簡單的是獨熱編碼 (One-Hot)，每個詞一個維度，高維且無法表達詞語間關係。詞嵌入是一種密集低維表示，使相似詞在向量空間中接近。Word2Vec 與 GloVe 是經典的詞嵌入模型，它們通過在大語料庫上預訓練，使詞向量能捕捉語義關聯（如“king”-“man”+“woman”≈“queen”）。在 PyTorch，可使用 torch.nn.Embedding(num_embeddings, embedding_dim) 層來將詞ID映射到對應的向量；也可載入預訓練詞向量作為初始權重。優點： 嵌入向量顯著提升模型對文本語意的理解能力，比獨熱表示需要更少維度就能表達豐富資訊。
+特徵表示與向量化： 除了詞嵌入，傳統方法還包括 n-gram 特徵 和 TF-IDF 向量。Bag-of-Words (詞袋模型) 將文本表示為詞頻向量，不考慮詞序。TF-IDF (詞頻-逆文件頻率) 為詞袋加權，降低常見詞影響，突出關鍵詞。Scikit-learn 用法：
+python
+複製
+編輯
+from sklearn.feature_extraction.text import TfidfVectorizer
+corpus = ["我 喜歡 機器 學習", "機器 學習 很 有趣"]
+vec = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b")  # 定義分詞規則
+X = vec.fit_transform(corpus)
+print(vec.get_feature_names_out())  # 詞彙表
+print(X.toarray())                  # TF-IDF 矩陣
+TF-IDF 向量常搭配傳統機器學習分類器（如 Naive Bayes、邏輯迴歸、SVM）用於文本分類，在資料量不大時效果不錯且速度快。常見錯誤： 忘記在預處理時處理文字編碼導致讀取錯誤，或 token_pattern 導致分詞不如預期。
+常用NLP任務模型：
+文本分類： 輸入為文本，輸出為類別（例如垃圾郵件識別、情感分析）。可用機器學習算法（將文本向量化後用如羅吉斯迴歸、SVM）或深度學習模型（如簡單的詞嵌入+平均/池化，再接全連接，或 RNN/CNN 模型）來實現。Scikit-learn 管道範例：
+python
+複製
+編輯
+from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import LogisticRegression
+pipe = make_pipeline(TfidfVectorizer(), LogisticRegression())
+pipe.fit(train_texts, train_labels)
+preds = pipe.predict(test_texts)
+上述使用 TF-IDF 和 LogisticRegression 的流水線完成文本分類。深度學習方法： 可構建簡單 CNN 在詞序上卷積抽取關鍵詞特徵，或 RNN（如 LSTM）順序讀取詞向量捕捉語序信息，再接全連接分類。常見陷阱： 中文處理需要先切詞；長文本可能需要截斷或分段處理避免輸入過長。
+序列標注： 如 分詞、命名實體識別 (NER) 等，給序列中每個元素標籤。常用 Bi-LSTM + CRF 或 Transformer 等架構處理。
+機器翻譯 / 文字生成： 傳統上使用 編碼器-解碼器 (Encoder-Decoder) 架構的 RNN 或 LSTM，近年則主要依賴 Transformer 架構。
+Transformer 與注意力機制 (Attention)： Transformer 是目前 NLP 主流模型架構，基於自注意力 (Self-Attention) 機制而非循環網絡。注意力機制讓模型在編碼序列時可以學習權重來關注輸入中的不同部分
+ioai-official.org
+。Transformer 將序列同時餵入多頭注意力層，捕捉詞與詞之間的依賴關係，擺脫了序列計算的瓶頸。優點： 支持並行計算（相較 RNN 須序列計算），效果隨模型變大顯著提升。BERT、GPT 等皆是以 Transformer 為基礎。
+預訓練語言模型 (Pre-trained NLP Models)： 如 BERT (雙向編碼器表示) 和 GPT (生成式預訓練變換模型) 是 Transformer 架構的預訓練模型，在海量文本上訓練，學習通用的語言表示。BERT 側重於理解（填詞、分類等下游任務效果突出），GPT 側重於文本生成。
+ioai-official.org
+ 在NLP比賽中，往往通過微調 (Fine-tuning) 這些預訓練模型能取得極佳效果。例：Hugging Face 提供易用接口，可快速載入預訓練模型:
+python
+複製
+編輯
+from transformers import BertTokenizer, BertForSequenceClassification
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
+之後將文本轉換為模型輸入格式並訓練即可。注意： 由於參數龐大，預訓練模型調優需要相對較高的計算資源和調參技巧，但其預訓練知識往往能極大提升低資源任務的表現。
+大型語言模型與應用： GPT-3/GPT-4 等大型語言模型 (LLMs) 擁有數以十億計參數，基於Transformer架構，能執行各種複雜的NLP任務（翻譯、問答、摘要等），甚至不需要專門微調就能通過提示完成任務 (提示學習/零樣本學習)。當前趨勢還包括：
+Prompt Engineering (提示設計)： 為 LLM 設計合適的提示或問題以引導其產生預期結果。
+Finetuning 大模型 使用 LoRA、適配器 (Adapter) 等技術：這些方法凍結大部分原模型權重，只訓練小量附加參數，以較低資源調適模型至特殊任務，同時保留大模型原有知識。
+ChatGPT, Bard 等聊天機器人： 在大型模型上透過對話數據進行強化學習人類反饋 (RLHF) 微調，使其更善於進行多輪對話和遵循指令。原理涉及策略優化與獎勵模擬，但比賽中理解概念即可。
+LLM Agents： 結合 LLM 與工具使用能力的系統，讓模型可以調用插件或API執行操作，例如利用 Python 計算、資料庫查詢等（如 LangChain 框架）。這屬更前沿方向，一般競賽中不涉及實作，但瞭解概念有助於擴展視野。
+以上NLP知識在比賽中理論部分可能涉及概念題，例如詢問注意力機制的作用、BERT與GPT的差異等；實作部分則可能聚焦較基本的文本分類或分析任務，因此應熟悉文本處理流程及常用模型。比賽允許查詢 HuggingFace 等資源
+mcs.mo
+，如遇複雜NLP任務，可查相關庫文件作輔助。
+範例題解：手寫數字識別 (CNN 實作範例)
+題目描述： 本範例來自 MOAI 比賽提供的手寫數字識別編程題。任務是使用 PyTorch 構建卷積神經網絡（CNN）模型來識別手寫數字（0~9）。數據集為經典的 MNIST 手寫字集：訓練集 60000 張 28x28 灰度圖，測試集 10000 張。以下我們逐小題給出詳細解答，包括數據讀取與預處理、模型構建、模型訓練與評估、以及測試預測與提交格式。
+小題 1：數據讀取與預處理 (15 分)
+任務要求：
+讀取提供的訓練影像檔案 train-images.pt 及訓練標籤檔案 train-labels.csv
+file-cuatb2ef6rmab8yk5hyvgu
+。
+將數據按 8:2 比例劃分為訓練集和驗證集
+file-cuatb2ef6rmab8yk5hyvgu
+。
+對影像數據進行歸一化處理並轉換為 PyTorch 張量
+file-cuatb2ef6rmab8yk5hyvgu
+。
+解題思路： MNIST 數據已給定為 .pt (PyTorch tensor) 和 .csv 格式，直接讀取即可。歸一化可將像素值從 [0,255] 縮放到 [0,1] 浮點數，這是常見的預處理，有助於加速模型收斂。讀取後將資料劃分訓練/驗證集，便於在訓練過程中檢驗模型泛化能力。切分可使用 torch.utils.data.random_split 方便地按給定比例拆分 TensorDataset。 程式實現：
+python
+複製
+編輯
+import torch
+import pandas as pd
+from torch.utils.data import TensorDataset, random_split, DataLoader
+
+# 讀取資料集
+images_raw = torch.load('train-images.pt')           # 張量檔案 (60000, 28, 28)
+labels_raw_df = pd.read_csv('train-labels.csv')      # CSV檔案包含標籤欄位
+labels_raw = labels_raw_df['label'].values           # 提取標籤數組
+
+# 歸一化圖像數據並轉為 float 張量
+# MNIST 像素範圍 0-255，除以255使之落在0-1區間
+images = images_raw.float() / 255.0                  # shape: (60000, 28, 28), dtype: float32
+# 增加一個通道維度，因為是灰度圖，CNN 輸入需要 [批次, 通道, 高, 寬]
+images = images.unsqueeze(1)                         # 現在 shape: (60000, 1, 28, 28)
+labels = torch.tensor(labels_raw, dtype=torch.long)  # 轉換標籤為 long 張量
+
+# 建立張量資料集並按8:2拆分為訓練集和驗證集
+dataset = TensorDataset(images, labels)
+train_size = int(0.8 * len(dataset))                 # 80%作訓練
+val_size = len(dataset) - train_size                 # 20%作驗證
+train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+
+# 建立數據加載器 (DataLoader) 用於迭代批次數據
+train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
+val_loader   = DataLoader(val_dataset, batch_size=128, shuffle=False)
+
+print(f"總樣本數: {len(dataset)}, 訓練樣本: {len(train_dataset)}, 驗證樣本: {len(val_dataset)}")
+# 輸出示例: 總樣本數: 60000, 訓練樣本: 48000, 驗證樣本: 12000
+程式講解：
+使用 torch.load 直接加載 .pt 檔案中的 tensor。train-images.pt 讀入後大小為 (60000,28,28)，類型可能是 ByteTensor（0~255）。我們用 .float() 轉為浮點型，再 /255.0 進行歸一化。
+手寫數字為灰度圖，缺少顏色通道維度，因此用 unsqueeze(1) 在維度1處插入通道=1，得到形狀 (60000,1,28,28)。這對於 nn.Conv2d 等層是必要的。
+標籤讀入使用 pandas 主要是因為 CSV 格式方便。讀取後提取 label 欄位轉為 numpy 陣列，再用 torch.tensor 轉為 LongTensor。分類問題中標籤需為整數類別代號，PyTorch 的 CrossEntropyLoss 需要 Long 型。
+利用 random_split 按比例拆分資料集，其中訓練集 48000 筆、驗證集 12000 筆（5 萬 + 1 萬 = 60,000）。DataLoader 將資料集包裝成可迭代對象，設定批次大小 128，訓練集 shuffle=True 打亂確保每epoch數據順序隨機，驗證集可不打亂。
+檢查點： 此時可從 train_loader 取一個批次檢查資料形狀是否正確，比如 images_batch, labels_batch = next(iter(train_loader))，應得到 images_batch.shape == (128,1,28,28)，labels_batch.shape == (128,)。
+小題 2：構建 CNN 模型 (15 分)
+任務要求：
+定義一個簡單的卷積神經網絡，需滿足：至少兩個卷積層、兩個池化層，使用激活函數，輸出層為10維（對應0~9類別），並定義前向傳播將層連接
+file-cuatb2ef6rmab8yk5hyvgu
+file-cuatb2ef6rmab8yk5hyvgu
+。 解題思路： 根據要求，我們可以設計一個兩層卷積的 CNN。典型結構如下：卷積1 -> 激活 -> 池化 -> 卷積2 -> 激活 -> 池化 -> 展平 -> 全連接輸出層。激活函數選用 ReLU。每個卷積層後緊跟池化層，一方面提取特徵一方面減少特徵圖尺寸。最後全連接層輸出大小為10。下面按照這一思路實現模型。 程式實現：
+python
+複製
+編輯
+import torch.nn as nn
+
+class CNN(nn.Module):
+    def __init__(self):
+        super(CNN, self).__init__()
+        # 定義卷積層和池化層
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, padding=2)
+        # 第一個卷積: 輸入通道1(灰度)，輸出通道16，5x5卷積核，padding=2確保輸出28x28
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        # 最大池化: 2x2區域取最大值，尺寸減半
+        self.conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=5, padding=2)
+        # 第二個卷積: 輸入通道16，輸出通道32，5x5卷積核，padding=2確保輸出14x14在池化前
+        # (經過第一次池化28->14，再conv2後因padding輸出14x14)
+        self.fc = nn.Linear(in_features=32 * 7 * 7, out_features=10)
+        # 全連接層: 32個特徵圖 * 7*7空間大小 展平後作為輸入, 輸出10個類別
+        
+        self.activation = nn.ReLU()  # 使用 ReLU 激活函數
+
+    def forward(self, x):
+        # 前向傳播定義各層的連接
+        x = self.conv1(x)
+        x = self.activation(x)   # 卷積後經 ReLU 非線性
+        x = self.pool(x)         # 池化層將 28x28 -> 14x14
+        x = self.conv2(x)
+        x = self.activation(x)   # 第二次 ReLU
+        x = self.pool(x)         # 第二次池化 14x14 -> 7x7
+        x = x.view(x.size(0), -1)
+        # 展平張量: 將(batch, 32, 7, 7)攤平為(batch, 32*7*7)
+        x = self.fc(x)           # 輸出層線性變換到10維
+        return x
+
+# 初始化模型並移至設備 (CPU/GPU)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = CNN().to(device)
+print(model)
+輸出模型結構，驗證包含所需層次：
+scss
+複製
+編輯
+CNN(
+  (conv1): Conv2d(1, 16, kernel_size=5, padding=2)
+  (pool): MaxPool2d(kernel_size=2, stride=2, padding=0)
+  (conv2): Conv2d(16, 32, kernel_size=5, padding=2)
+  (fc): Linear(in_features=1568, out_features=10, bias=True)
+  (activation): ReLU()
+)
+如上所示，兩個卷積 (conv1, conv2)、兩個池化 (pool重複使用)、一個 ReLU 激活函數模組（可重複使用）、和一個輸出全連接層均已定義滿足要求。 模型講解：
+卷積層參數選擇： 這裡卷積核取 5x5 且 padding=2，主要是方便計算：輸入28x28經 Conv1 後因補零保持28x28，再 MaxPool2d 2x2->14x14。Conv2 同理，輸入14x14 補零後保持14x14，再池化->7x7。輸出特徵圖數量第一層16、第二層32，是較小網絡設定，當然也可增加。激活函數在每個卷積後使用 ReLU 增加非線性。
+池化層作用： 每次池化將特徵圖尺寸減半，最終 28x28 -> 7x7，因此全連接層輸入為3277=1568維。池化也減少計算量和參數，並提供平移縮放不變性，符合題意要求兩個池化層。
+全連接層： 將卷積提取的特徵映射到分類輸出。這裡僅用單層線性，亦可視需要加一層隱藏層提升表達力。輸出維度10對應數字0-9類別。注意：如果前面卷積/池化參數改變，展平後輸入維度1568也需相應更改，否則會尺寸不匹配。
+常見錯誤檢查： 若 print(model) 或 forward 測試中出現尺寸錯誤，通常是展平維度算錯，建議打印 x.shape 驗證每步尺寸。此模型中 conv1輸出(?,16,28,28) -> pool -> (?,16,14,14) -> conv2 -> (?,32,14,14) -> pool -> (?,32,7,7)，展平即3277=1568對應 fc 輸入。這與代碼一致，如有不符說明卷積參數計算有誤。
+小題 3：訓練模型 (20 分)
+任務要求：
+選擇適當的損失函數（如 MSELoss, CrossEntropyLoss 等）
+file-cuatb2ef6rmab8yk5hyvgu
+。本問題為多類分類，應選交叉熵損失以衡量預測機率分布與真實分布差異。
+選擇優化器（如 SGD, Adam）並設定學習率
+file-cuatb2ef6rmab8yk5hyvgu
+。Adam 往往收斂較快，SGD 配合適當學習率也可。這裡我們選用 Adam 優化。
+將模型在訓練集上訓練至少 5 個 epoch，每個 epoch 結束時分別打印訓練集和驗證集的損失和準確率
+file-cuatb2ef6rmab8yk5hyvgu
+。
+解題思路： 先將模型和數據加載到合適裝置 (GPU 若可用)。定義 criterion 為交叉熵損失（因為我們的輸出未經 softmax，但 PyTorch 的 CrossEntropyLoss 內部會先對輸出做LogSoftmax，所以直接使用即可）。定義 optimizer 為 Adam，設置學習率如 0.001。接著編寫訓練循環：外層跑5個 epoch，內層遍歷 train_loader 做梯度更新。每個 epoch 結束後，用 val_loader 計算驗證損失和準確率。打印結果時，為清晰起見，同時列出當輪的 train/val 指標。 程式實現：
+python
+複製
+編輯
+import torch.optim as optim
+
+criterion = nn.CrossEntropyLoss()               # 選擇交叉熵損失函數 (適用於分類)
+optimizer = optim.Adam(model.parameters(), lr=0.001)  # 選擇 Adam 優化器, 學習率 0.001
+
+num_epochs = 5
+for epoch in range(num_epochs):
+    model.train()                               # 模型設為訓練模式
+    running_loss = 0.0
+    correct = 0
+    total = 0
+    # 訓練循環
+    for batch_idx, (images_batch, labels_batch) in enumerate(train_loader):
+        # 將當前批次數據移到計算設備
+        images_batch = images_batch.to(device)
+        labels_batch = labels_batch.to(device)
+        
+        optimizer.zero_grad()                   # 清空上一批次的梯度
+        outputs = model(images_batch)           # 前向傳播得到輸出 (logits)
+        loss = criterion(outputs, labels_batch) # 計算當前批次的交叉熵損失
+        loss.backward()                         # 反向傳播，計算梯度
+        optimizer.step()                        # 更新模型參數
+        
+        running_loss += loss.item() * labels_batch.size(0)   # 累加損失總和（乘批次大小）
+        # 計算準確個數: 預測值為輸出中最大logit的類別
+        _, predicted = outputs.max(1)                        # predicted shape: (batch_size,)
+        correct += (predicted == labels_batch).sum().item()  # 計算匹配的數量
+        total += labels_batch.size(0)
+        
+        # 可選：每隔若干批次打印一次中間狀態
+        if batch_idx % 50 == 0:
+            batch_acc = (predicted == labels_batch).float().mean().item()
+            print(f"[Epoch {epoch+1} Batch {batch_idx}] 目前批次訓練Loss: {loss.item():.4f}, Accuracy: {batch_acc*100:.2f}%")
+    
+    # 計算該 epoch 的平均訓練損失和準確率
+    train_loss = running_loss / total
+    train_accuracy = correct / total
+    
+    # 驗證循環（不需梯度更新）
+    model.eval()                                # 模型設為評估模式
+    val_loss_sum = 0.0
+    correct_val = 0
+    total_val = 0
+    with torch.no_grad():                       # 關閉梯度計算
+        for images_batch, labels_batch in val_loader:
+            images_batch = images_batch.to(device)
+            labels_batch = labels_batch.to(device)
+            outputs = model(images_batch)
+            loss = criterion(outputs, labels_batch)
+            val_loss_sum += loss.item() * labels_batch.size(0)
+            _, predicted = outputs.max(1)
+            correct_val += (predicted == labels_batch).sum().item()
+            total_val += labels_batch.size(0)
+    val_loss = val_loss_sum / total_val
+    val_accuracy = correct_val / total_val
+    
+    # 列印本 epoch 的訓練和驗證統計
+    print(f"Epoch {epoch+1}: Train Loss = {train_loss:.4f}, Train Acc = {train_accuracy*100:.2f}%, "
+          f"Val Loss = {val_loss:.4f}, Val Acc = {val_accuracy*100:.2f}%")
+輸出示例 (模擬數據結果)：
+java
+複製
+編輯
+[Epoch 1 Batch 0] 目前批次訓練Loss: 2.3065, Accuracy: 10.16%
+[Epoch 1 Batch 50] 目前批次訓練Loss: 0.4458, Accuracy: 85.94%
+Epoch 1: Train Loss = 0.5703, Train Acc = 82.45%, Val Loss = 0.1578, Val Acc = 95.20%
+Epoch 2: Train Loss = 0.1504, Train Acc = 95.35%, Val Loss = 0.1082, Val Acc = 96.65%
+...
+Epoch 5: Train Loss = 0.0498, Train Acc = 98.62%, Val Loss = 0.0475, Val Acc = 98.35%
+(註：以上數據僅供示意，實際結果視模型隨機初始化和訓練過程而定，但一般CNN在MNIST上可很快達到高於98%的準確率。) 訓練過程講解：
+損失函數選擇理由： 多分類問題選擇交叉熵損失 (nn.CrossEntropyLoss)。
+file-cuatb2ef6rmab8yk5hyvgu
+題目中列出的 MSELoss 也可勉強用於分類（將標籤 one-hot 後當迴歸對待），但那樣效果較差且不符合常規。所以我們正確選用了 CrossEntropyLoss，它內部會對模型輸出做 softmax 後再計算交叉熵，適合此處未經 softmax 的 logits。
+優化器選擇與學習率： Adam 是一種自適應學習率的方法，對初學者友好，通常能更快降低loss。我們用 optim.Adam 並設置 lr=0.001（一個常見初始值）。也可以選 SGD，如 optim.SGD(model.parameters(), lr=0.01, momentum=0.9)，但需要適當調整學習率、加上 momentum 等，訓練初期可能略慢。由於題目給了多種選項，選任一並說明理由即可得分。這裡選 Adam 能穩定快速下降 loss。
+訓練細節：
+我們遍歷每個 batch，累積計算總損失和正確數以便後續計算整個 epoch 平均損失和準確率。running_loss 累積時乘以 batch 大小是為了得到總損失，再除以總樣本算平均。也可以每 batch 平均後累加再平均，結果一致。
+predicted = outputs.max(1)[1] 獲得每樣本預測的類別（logits最大索引）。比較 predicted 和真實 labels_batch 得到布林張量，再用 .sum().item()算出 True 數量累加。最終 train_accuracy = correct/total 得到訓練準確率。
+列印： 我們按題意在每個 epoch 結束時打印了 Train 和 Val 的 Loss 和 Accuracy
+file-cuatb2ef6rmab8yk5hyvgu
+。為了監控訓練進展，還在每50個 batch 打印一次當前批次的loss和acc（此非題意要求，但實踐中常見，可幫助了解訓練是否正常進行）。
+使用 model.eval() 及 torch.no_grad() 進行驗證，確保不會計算梯度也不會更新模型。同時停用 dropout 等（本模型無 dropout，但習慣如此）。
+常見錯誤處理：
+忘記 optimizer.zero_grad()： 將導致梯度累積，使得後續更新量不正確。我們每個 batch 都reset梯度避免此問題。
+未切換 model.train()/eval()： 若模型有 BN/Dropout層，不切換模式會影響評估結果。我們雖然模型簡單無此類層，仍示範了正確用法。
+張量維度不匹配： 若在 loss = criterion(outputs, labels_batch) 報錯，多半是 labels 型別或維度問題。CrossEntropyLoss 要求 outputs shape [batch, classes], labels shape [batch] 且為 Long 型。我們已確保此要求（labels在讀取時轉為Long，輸出經Linear為[batch,10]）。
+經過5個epoch訓練，可以看到訓練集和驗證集準確率都逐步上升且接近，表示模型在此資料上效果良好且無明顯過擬合跡象（若訓練Acc遠高於驗證Acc，則可能過擬合）。若需要更高準確率，可考慮增加卷積層通道或訓練更多epoch，但題目要求5個epoch已完成。
+小題 4：測試集預測與提交 (50 分)
+任務要求：
+使用訓練好的模型對測試集進行預測，將結果輸出為 submission.csv 供賽後評分。最終得分依據模型在隱藏測試集的準確率映射到0~50分區間
+file-cuatb2ef6rmab8yk5hyvgu
+file-cuatb2ef6rmab8yk5hyvgu
+。題目給出了準確率對分數的對照，以及產生提交檔案的參考程式
+file-cuatb2ef6rmab8yk5hyvgu
+file-cuatb2ef6rmab8yk5hyvgu
+。 解題思路： 測試影像位於 test_images.pt，格式和訓練影像類似（假設也是 28x28 灰度的 tensor）。步驟：讀取測試影像 -> 進行與訓練相同的歸一化處理 -> 利用已訓練模型預測每張圖片的數字 -> 將預測結果存為 CSV。注意： 要確保對測試的預處理與訓練一致（同樣除255、加通道）。另外，由於測試集沒有標籤，CSV提交格式通常要求兩欄：id 和 label，其中 id 可為樣本的索引。題目程式用 index_label="id" 參數使得CSV第一列為id索引。
+file-cuatb2ef6rmab8yk5hyvgu
+ 程式實現：
+python
+複製
+編輯
+# 讀取測試集影像張量
+test_images = torch.load('test_images.pt')           # shape: (10000, 28, 28)
+# 與訓練集相同的歸一化處理
+test_images = test_images.float() / 255.0            # 轉為浮點並歸一化到0-1
+test_images = test_images.unsqueeze(1)               # 增加通道維度 -> (10000, 1, 28, 28)
+
+model.eval()                                         # 切換模型為評估模式
+with torch.no_grad():                                # 不需要計算梯度
+    test_images = test_images.to(device)
+    outputs = model(test_images)                     # 對所有測試影像進行前向傳播
+    predictions = outputs.argmax(dim=1)              # 取每張圖片最大logit的索引作為預測類別
+
+# 將結果轉為 DataFrame 並保存為 CSV
+df_test = pd.DataFrame({"label": predictions.cpu().numpy()})
+df_test.to_csv("submission.csv", index_label="id")
+print("Test predictions saved, first 5 entries:")
+print(df_test.head())
+檔案輸出示例： submission.csv 內容格式應該如下：
+python-repl
+複製
+編輯
+id,label
+0,7
+1,2
+2,1
+3,0
+4,4
+...
+每行表示測試集中對應圖片的預測數字。其中 id 為索引（0開始），label 為模型預測的數字類別。 解答講解：
+模型預測過程： 將整個測試集張量一次性傳入模型得到輸出 outputs（形狀 [10000,10]）。使用 argmax(dim=1) 沿類別維度取最大值的索引，即對每個樣本選出概率最高的類別索引作為預測標籤。
+file-cuatb2ef6rmab8yk5hyvgu
+這裡可以直接全批次預測，是因為模型和顯存能容納10000張28x28灰度圖。若圖像更大或模型更複雜，需像訓練時那樣用 DataLoader 分批預測以免記憶體不足。
+CPU/GPU 切換： 由於可能在 GPU 上計算，predictions 仍位於 GPU，要儲存或與CPU上的 pandas互動需要 .cpu() 拷貝回主記憶體，然後再 .numpy() 轉為 numpy 陣列。這點我們在建立 DataFrame 時處理了。
+提交格式： 我們創建 DataFrame 時傳入一個 dict {"label": predictions.numpy()} 並指定 index_label="id"，這會自動將 DataFrame 索引作為一列名為 id 輸出。預設索引0~9999正好對應圖片ID，非常方便。注意： 一定要保證提交的順序與測試集原順序一一對應，不要打亂。上述做法直接按原順序輸出，所以是正確的。
+額外說明： 題目給出的評分標準
+file-cuatb2ef6rmab8yk5hyvgu
+顯示：若模型在隱藏測試集準確率 x% 在90-100之間，得分30-50依公式 $50 - 2 * (100 - x)$ 線性遞減；80-90% 對應20-30分；50-80% 對應0-20分；低於50%得0分。因此，本模型若在公開驗證集約98%，在隱藏測試集理論上也接近這水準，那最終得分應在接近滿分50分的區間。
+file-cuatb2ef6rmab8yk5hyvgu
+ 這也是此小題50分的由來。參賽者應盡力優化模型提高準確率以獲得更高得分。 完整流程回顧：
+我們完成了從數據讀取、處理，到模型訓練與預測的端到端步驟。在比賽中，可以按照此模板開發模型，並確保在每階段遵循最佳實踐（如正確預處理、調參驗證、結果保存等）。經由實驗，本模型已經能較好地完成手寫數字分類任務。如果時間允許，還可以嘗試：增加訓練 epoch、調整學習率策略、增加 Dropout 正則化防止潛在過擬合、甚至引入卷積層 BN 層等，以期進一步提升效果。但基於題目要求，此解答已足夠達到高評分區間。
+結語
+本手冊系統彙整了 MOAI 2025 比賽相關的人工智慧知識點，從程式基礎到機器學習理論，從深度學習實作到具體範例解析。在比賽過程中，選手可快速查閱：
+語法範例：瞭解 Python、numpy、pandas、PyTorch、sklearn 等庫的常用介面和用法。
+理論要點：重溫模型的定義、優缺點、適用場合（如各算法、評估指標、深度學習概念）。
+調試提示：遇到錯誤時，對照常見坑點排查修正。
+最佳實踐：參考經驗法則（如正則化、資料增強、調參方法）改進方案。
+透過範例題的完整解題示範，選手可以掌握如何將上述知識融會貫通地應用於實際問題：包括資料讀取與處理步驟、模型構建與訓練細節、結果輸出與格式要求等。希望本手冊能夠幫助大家在比賽中快速定位知識點並應用自如，取得優異的成績！
